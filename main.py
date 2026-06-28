@@ -108,23 +108,6 @@ async def image_page(request: Request):
         })
 
 
-@app.post('/image', response_class=HTMLResponse)
-async def create_image(request: Request, user_input: Annotated[str, Form()]):
-    response = client.images.generate(
-        prompt=user_input,
-        model="gpt-image-1",
-        size='auto',
-    )
-
-    image_url = response.data[0].b64_json
-
-    return templates.TemplateResponse(
-        "image.html",
-        {
-            "request": request,
-            "image_url": image_url
-        })
-
 
 @app.post("/image", response_class=HTMLResponse)
 async def create_image(
