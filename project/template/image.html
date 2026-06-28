@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Image Generator</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+
+    background:linear-gradient(135deg,#0f172a,#1e293b,#111827);
+
+    min-height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:30px;
+
+}
+
+.container{
+
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:30px;
+
+}
+
+.left{
+
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:30px;
+
+}
+
+.left h1{
+    color: white;
+    font-size:32px;
+    margin-bottom:10px;
+
+}
+
+.left p{
+
+    color:#cbd5e1;
+    margin-bottom:25px;
+    line-height:1.6;
+
+}
+
+label{
+
+    color:white;
+    margin-top:20px;
+    margin-bottom:8px;
+    font-weight:600;
+
+}
+
+textarea{
+
+    width:100%;
+    height:160px;
+    resize:none;
+    border:none;
+    outline:none;
+    border-radius:15px;
+    padding:18px;
+    background:#1e293b;
+    color:white;
+    font-size:15px;
+
+}
+
+select{
+
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    margin-bottom:10px;
+    font-size:15px;
+
+}
+
+button{
+
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+    transition:.3s;
+
+}
+
+button:hover{
+
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(0,0,0,.4);
+
+}
+
+.right{
+
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+
+}
+
+.placeholder{
+
+    text-align:center;
+
+}
+
+.placeholder h2{
+    color: white;
+    margin-top:20px;
+    font-size:28px;
+
+}
+
+.placeholder p{
+
+    margin-top:10px;
+    color:#94a3b8;
+
+}
+
+.image-box{
+
+    width:90%;
+    height:90%;
+   display: none;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.image-box img{
+
+    width:100%;
+    border-radius:18px;
+    object-fit:cover;
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+}
+
+.loader{
+
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    border:6px solid rgba(255,255,255,.2);
+    border-top:6px solid white;
+    animation:spin 1s linear infinite;
+    display:none;
+
+}
+
+@keyframes spin{
+
+    100%{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@media(max-width:900px){
+
+.container{
+
+grid-template-columns:1fr;
+
+}
+
+.left{
+
+order:2;
+
+}
+
+.right{
+
+height:500px;
+
+}
+
+}
+.top-nav{
+
+    width:100%;
+    max-width:1100px;
+    margin:0 auto 25px auto;
+
+    display:flex;
+    justify-content:flex-start;
+    gap:12px;
+
+}
+
+.nav-btn{
+
+    text-decoration:none;
+    color:#cbd5e1;
+
+    background:#1e293b;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    padding:10px 20px;
+
+    border-radius:999px;
+
+    transition:.3s;
+
+    font-weight:600;
+
+}
+
+.nav-btn:hover{
+
+    background:#334155;
+
+}
+
+.nav-btn.active{
+
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+
+    color:white;
+
+    border:none;
+
+}
+
+
+#customSize{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+#customSize input{
+
+    width:100%;
+    padding:14px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    font-size:15px;
+
+}
+
+#customSize input::placeholder{
+    color:#94a3b8;
+}
+</style>
+
+</head>
+
+<body>
+ <div class="top-nav">
+
+    <a href="/" class="nav-btn">
+        💻 Coding
+    </a>
+
+    <a href="/image" class="nav-btn active">
+        🎨 Images
+    </a>
+
+</div>
+  
+
+<div class="container">
+
+<div class="left">
+
+<h1>🎨 AI Image Generator</h1>
+
+<p>
+Describe anything you imagine and let AI create a unique image in seconds.
+</p>
+
+
+
+<form action="/image" method="post">
+
+<label>Image Prompt</label>
+
+<textarea
+    name="user_input"
+    placeholder="Example: A futuristic cyberpunk city..."
+></textarea>
+
+<label>Image Size</label>
+
+<select id="size" name="size">
+    <option value="1024x1024">1024 × 1024</option>
+    <option value="1536x1024">1536 × 1024</option>
+    <option value="1024x1536">1024 × 1536</option>
+    <option value="auto">Auto</option>
+    <option value="custom">custom</option>
+</select>
+
+<div id="customSize" style="display:none; margin-top:15px;">
+
+    <input
+        type="text"
+        id="width"
+        name="width"
+        placeholder="Width (e.g. 1024)"
+    >
+
+    <input
+        type="text"
+        id="height"
+        name="height"
+        placeholder="Height (e.g. 1024)"
+    >
+
+</div>
+<label>Style</label>
+
+<select>
+
+<option>Realistic</option>
+<option>Anime</option>
+<option>3D Render</option>
+<option>Digital Art</option>
+<option>Oil Painting</option>
+<option>Fantasy</option>
+<option>Cyberpunk</option>
+
+</select>
+<button type="submit">
+    Generate Image
+</button></form>
+
+
+</div>
+
+<div class="right">
+{% if image_url %}
+<div id="imageBox" class="image-box" style="display:flex;">
+    <img src="data:image/png;base64,{{ image_url }}" alt="Generated Image">
+</div>
+{% else %}
+<div class="placeholder">
+    <div style="font-size:90px;">🖼️</div>
+    <h2>Your image will appear here</h2>
+    <p>Generate beautiful AI images instantly.</p>
+</div>
+{% endif %}
+
+<div class="loader"></div>
+
+
+</div>
+
+</div>
+
+<script>
+
+const form = document.querySelector("form");
+const loader = document.querySelector(".loader");
+const placeholder = document.querySelector(".placeholder");
+const imageBox = document.querySelector("#imageBox");
+
+form.addEventListener("submit", function () {
+
+    if (placeholder) {
+        placeholder.style.display = "none";
+    }
+
+    if (imageBox) {
+        imageBox.style.display = "none";
+    }
+
+    loader.style.display = "block";
+});
+
+
+
+const sizeSelect = document.getElementById("size");
+const customSize = document.getElementById("customSize");
+
+sizeSelect.addEventListener("change", function () {
+
+    if (this.value === "custom") {
+        customSize.style.display = "flex";
+    } else {
+        customSize.style.display = "none";
+    }
+
+});
+</script>
+
+</body>
+</html>
