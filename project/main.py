@@ -10,7 +10,7 @@ load_dotenv()
 client = OpenAI(
     api_key=os.getenv("API_KEY"))
 app = FastAPI()
-templates = Jinja2Templates(directory='template')
+templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), 'template'))
 chat_response = []
 
 
