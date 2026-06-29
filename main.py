@@ -101,9 +101,9 @@ async def chat(request: Request, user_input: Annotated[str, Form()]):
 @app.get('/image', response_class=HTMLResponse)
 async def image_page(request: Request):
     return templates.TemplateResponse(
-        "image.html",
-        {
-            "request": request,
+        name="image.html",
+         request= request,
+         context={
             "image_url": None
         })
 
@@ -130,9 +130,8 @@ async def create_image(
     image_url = response.data[0].b64_json
 
     return templates.TemplateResponse(
-        "image.html",
-        {
-            "request": request,
-            "image_url": image_url,
+        name="image.html",
+        request= request,
+            context={"image_url": image_url,
         },
     )
